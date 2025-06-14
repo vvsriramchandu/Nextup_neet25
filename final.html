@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEET PG App - Apple Design</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'SF Pro Display', sans-serif;
+      background: #f8f9fa;
+      color: #111;
+    }
+    h1, h2, h3 {
+      text-align: center;
+      color: #017ec3;
+    }
+    .hidden {
+      display: none;
+    }
+    .page {
+      padding: 20px;
+      margin-bottom: 100px;
+    }
+    .subject-list, .topic-list, .question-container {
+      padding: 10px;
+    }
+    .subject {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: white;
+      border-radius: 12px;
+      margin: 10px 0;
+      padding: 15px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      cursor: pointer;
+    }
+    .subject-progress {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .progress-bar {
+      width: 80px;
+      height: 8px;
+      background-color: #e0e0e0;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background-color: #4caf50;
+      transition: width 0.3s ease;
+    }
+    .topic {
+      background-color: white;
+      border-radius: 12px;
+      margin: 10px 0;
+      padding: 15px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      cursor: pointer;
+    }
+    .question {
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 6px;
+      background: #e9ecef;
+    }
+    .option {
+      padding: 8px;
+      margin: 5px 0;
+      background: white;
+      border-radius: 5px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      cursor: pointer;
+    }
+    .option.correct {
+      background-color: #4caf50;
+      color: white;
+    }
+    .option.wrong {
+      background-color: #f44336;
+      color: white;
+    }
+    #dock {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      right: 10px;
+      display: flex;
+      justify-content: space-around;
+      background: #fff;
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: 0 -1px 5px rgba(0,0,0,0.1);
+    }
+    #dock button {
+      background: none;
+      border: none;
+      font-size: 14px;
+      color: #444;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #dock img {
+      width: 24px;
+      height: 24px;
+      margin-bottom: 5px;
+    
+    }
+    .login-btn {
+      display: block;
+      margin: 50px auto;
+      padding: 10px 20px;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 8px;
+      background-color: #017ec3;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="homePage" class="page">
+    <h1>NEET PG 2025</h1>
+    <p style="text-align:center">Sign in to continue</p>
+    <button class="login-btn" onclick="alert('Google Login Placeholder')">Sign in with Google</button>
+  </div>
+
+  <div id="qbankPage" class="hidden page">
+    <h2>QBank - Subjects</h2>
+    <div class="subject-list" id="subjectList"></div>
+  </div>
+
+  <div id="videosPage" class="hidden page">
+    <h2>Video Resources</h2>
+    <ul id="videoLinks"></ul>
+  </div>
+
+  <div id="testsPage" class="hidden page">
+    <h2>Mock Test</h2>
+    <div class="timer" id="timer">40:00</div>
+    <div id="testQuestions"></div>
+  </div>
+
+  <div class="hidden page" id="topicPage">
+    <h2 id="selectedSubjectTitle"></h2>
+    <div class="topic-list" id="topicList"></div>
+  </div>
+
+  <div class="hidden page" id="questionPage">
+    <h2 id="selectedTopicTitle"></h2>
+    <div id="questionContainer"></div>
+  </div>
+
+  <div id="dock">
+    <button onclick="showPage('homePage')">
+      <img src="Home.png" alt="Home" />Home
+    </button>
+    <button onclick="showPage('qbankPage')">
+      <img src="Qbank.png" alt="QBank" />QBank
+    </button>
+    <button onclick="showPage('videosPage')">
+      <img src="Video.png" alt="Videos" />Videos
+    </button>
+    <button onclick="showPage('testsPage')">
+      <img src="test.png" alt="Tests" />Tests
+    </button>
+  </div>
+
+  <script>
+    const pages = ['homePage', 'qbankPage', 'videosPage', 'testsPage', 'topicPage', 'questionPage'];
+
+    function showPage(id) {
+      pages.forEach(p => document.getElementById(p).classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    const subjectNames = [
+      'Anatomy', 'Physiology', 'Biochemistry', 'Pathology', 'Pharmacology',
+      'Microbiology', 'Forensic Medicine', 'Community Medicine', 'ENT', 'Ophthalmology',
+      'Medicine', 'Surgery', 'Obstetrics & Gynaecology', 'Pediatrics', 'Orthopedics',
+      'Dermatology', 'Psychiatry', 'Radiology', 'Anesthesia'
+    ];
+
+    const subjectProgress = {
+      'Anatomy': 20, 'Physiology': 50, 'Biochemistry': 30, 'Pathology': 60, 'Pharmacology': 45,
+      'Microbiology': 70, 'Forensic Medicine': 10, 'Community Medicine': 35, 'ENT': 55, 'Ophthalmology': 25,
+      'Medicine': 80, 'Surgery': 65, 'Obstetrics & Gynaecology': 75, 'Pediatrics': 40,
+      'Orthopedics': 50, 'Dermatology': 20, 'Psychiatry': 10, 'Radiology': 0, 'Anesthesia': 5
+    };
+
+    const qbankData = {};
+    subjectNames.forEach(subject => {
+      qbankData[subject] = {
+        'Sample Topic': [
+          { q: `Sample question 1 from ${subject}`, opts: ["Option 1", "Option 2", "Option 3", "Option 4"], ans: "Option 2" },
+          { q: `Sample question 2 from ${subject}`, opts: ["Option A", "Option B", "Option C", "Option D"], ans: "Option C" }
+        ]
+      };
+    });
+
+    const subjectList = document.getElementById('subjectList');
+    Object.keys(qbankData).forEach(subject => {
+      const div = document.createElement('div');
+      div.className = 'subject';
+      div.onclick = () => showTopics(subject);
+
+      const title = document.createElement('div');
+      title.innerText = subject;
+
+      const progress = document.createElement('div');
+      progress.className = 'subject-progress';
+
+      const progressBar = document.createElement('div');
+      progressBar.className = 'progress-bar';
+
+      const progressFill = document.createElement('div');
+      progressFill.className = 'progress-fill';
+      progressFill.style.width = `${subjectProgress[subject] || 0}%`;
+
+      progressBar.appendChild(progressFill);
+      const progressText = document.createElement('span');
+      progressText.innerText = `${subjectProgress[subject] || 0}%`;
+
+      progress.appendChild(progressBar);
+      progress.appendChild(progressText);
+
+      div.appendChild(title);
+      div.appendChild(progress);
+
+      subjectList.appendChild(div);
+    });
+
+    function showTopics(subject) {
+      document.getElementById('selectedSubjectTitle').innerText = subject + ' Topics';
+      const topicList = document.getElementById('topicList');
+      topicList.innerHTML = '';
+      Object.keys(qbankData[subject]).forEach(topic => {
+        const div = document.createElement('div');
+        div.className = 'topic';
+        div.innerText = topic;
+        div.onclick = () => showQuestions(subject, topic);
+        topicList.appendChild(div);
+      });
+      showPage('topicPage');
+    }
+
+    function showQuestions(subject, topic) {
+      document.getElementById('selectedTopicTitle').innerText = topic;
+      const container = document.getElementById('questionContainer');
+      container.innerHTML = '';
+      qbankData[subject][topic].forEach((q, index) => {
+        const qDiv = document.createElement('div');
+        qDiv.className = 'question';
+        qDiv.innerHTML = `<strong>Q${index + 1}:</strong> ${q.q}`;
+        q.opts.forEach(opt => {
+          const optDiv = document.createElement('div');
+          optDiv.className = 'option';
+          optDiv.innerText = opt;
+          optDiv.onclick = () => {
+            if (opt === q.ans) {
+              optDiv.classList.add('correct');
+            } else {
+              optDiv.classList.add('wrong');
+            }
+            Array.from(optDiv.parentNode.querySelectorAll('.option')).forEach(optEl => {
+              optEl.onclick = null;
+              if (optEl.innerText === q.ans) {
+                optEl.classList.add('correct');
+              }
+            });
+          }
+          qDiv.appendChild(optDiv);
+        });
+        container.appendChild(qDiv);
+      });
+      showPage('questionPage');
+    }
+  </script>
+</body>
+</html>
