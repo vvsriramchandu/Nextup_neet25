@@ -1,288 +1,1478 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NEET PG App - Apple Design</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      font-family: 'SF Pro Display', sans-serif;
-      background: #f8f9fa;
-      color: #111;
-    }
-    h1, h2, h3 {
-      text-align: center;
-      color: #017ec3;
-    }
-    .hidden {
-      display: none;
-    }
-    .page {
-      padding: 20px;
-      margin-bottom: 100px;
-    }
-    .subject-list, .topic-list, .question-container {
-      padding: 10px;
-    }
-    .subject {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: white;
-      border-radius: 12px;
-      margin: 10px 0;
-      padding: 15px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-      cursor: pointer;
-    }
-    .subject-progress {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .progress-bar {
-      width: 80px;
-      height: 8px;
-      background-color: #e0e0e0;
-      border-radius: 5px;
-      overflow: hidden;
-    }
-    .progress-fill {
-      height: 100%;
-      background-color: #4caf50;
-      transition: width 0.3s ease;
-    }
-    .topic {
-      background-color: white;
-      border-radius: 12px;
-      margin: 10px 0;
-      padding: 15px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-      cursor: pointer;
-    }
-    .question {
-      margin: 10px 0;
-      padding: 10px;
-      border-radius: 6px;
-      background: #e9ecef;
-    }
-    .option {
-      padding: 8px;
-      margin: 5px 0;
-      background: white;
-      border-radius: 5px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-      cursor: pointer;
-    }
-    .option.correct {
-      background-color: #4caf50;
-      color: white;
-    }
-    .option.wrong {
-      background-color: #f44336;
-      color: white;
-    }
-    #dock {
-      position: fixed;
-      bottom: 30px;
-      left: 30px;
-      right: 30px;
-      display: flex;
-      justify-content: space-around;
-      background: #c5c5c5b0;
-      border-radius: 35px;
-      padding: 20px;
-      box-shadow: 0 -1px 5px rgba(0,0,0,0.1);
-    }
-    #dock button {
-      background: none;
-      border: none;
-      font-size: 14px;
-      color: #444;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    #dock img {
-      width: 34px;
-      height: 34px;
-      margin-bottom: 5px;
-    
-    }
-    .login-btn {
-      display: block;
-      margin: 50px auto;
-      padding: 10px 20px;
-      font-size: 1.2em;
-      border: none;
-      border-radius: 8px;
-      background-color: #017ec3;
-      color: white;
-      cursor: pointer;
-    }
-  </style>
-</head>
-<body>
-  <div id="homePage" class="page">
-    <h1>NEET PG 2025</h1>
-    <p style="text-align:center">Sign in to continue</p>
-    <button class="login-btn" onclick="alert('Google Login Placeholder')">Sign in with Google</button>
-  </div>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEET PG 25</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-  <div id="qbankPage" class="hidden page">
-    <h2>QBank - Subjects</h2>
-    <div class="subject-list" id="subjectList"></div>
-  </div>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --primary-color: #4285f4;
+            --secondary-color: #f8f9fa;
+            --border-color: #e0e0e0;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --success-color: #4caf50;
+            --error-color: #f44336;
+            --sidebar-bg: #ffffff;
+            --card-bg: #ffffff;
+        }
 
-  <div id="videosPage" class="hidden page">
-    <h2>Video Resources</h2>
-    <ul id="videoLinks"></ul>
-  </div>
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #ffffff;
+            --primary-color: #bb86fc;
+            --secondary-color: #1e1e1e;
+            --border-color: #333333;
+            --shadow-color: rgba(255, 255, 255, 0.1);
+            --success-color: #81c784;
+            --error-color: #e57373;
+            --sidebar-bg: #1e1e1e;
+            --card-bg: #1e1e1e;
+        }
 
-  <div id="testsPage" class="hidden page">
-    <h2>Mock Test</h2>
-    <div class="timer" id="timer">40:00</div>
-    <div id="testQuestions"></div>
-  </div>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            padding-bottom: 80px;
+        }
 
-  <div class="hidden page" id="topicPage">
-    <h2 id="selectedSubjectTitle"></h2>
-    <div class="topic-list" id="topicList"></div>
-  </div>
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px var(--shadow-color);
+        }
 
-  <div class="hidden page" id="questionPage">
-    <h2 id="selectedTopicTitle"></h2>
-    <div id="questionContainer"></div>
-  </div>
+        .profile-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
 
-  <div id="dock">
-    <button onclick="showPage('homePage')">
-      <img src="Home.png" alt="Home" />Home
-    </button>
-    <button onclick="showPage('qbankPage')">
-      <img src="Qbank.png" alt="QBank" />QBank
-    </button>
-    <button onclick="showPage('videosPage')">
-      <img src="Video.png" alt="Videos" />Videos
-    </button>
-    <button onclick="showPage('testsPage')">
-      <img src="test.png" alt="Tests" />Tests
-    </button>
-  </div>
+        .profile-icon:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
 
-  <script>
-    const pages = ['homePage', 'qbankPage', 'videosPage', 'testsPage', 'topicPage', 'questionPage'];
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+        }
 
-    function showPage(id) {
-      pages.forEach(p => document.getElementById(p).classList.add('hidden'));
-      document.getElementById(id).classList.remove('hidden');
-    }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100vh;
+            background-color: var(--sidebar-bg);
+            box-shadow: 2px 0 10px var(--shadow-color);
+            transition: left 0.3s ease;
+            z-index: 1001;
+            padding: 80px 20px 20px;
+            border-right: 1px solid var(--border-color);
+        }
 
-    const subjectNames = [
-      'Anatomy', 'Physiology', 'Biochemistry', 'Pathology', 'Pharmacology',
-      'Microbiology', 'Forensic Medicine', 'Community Medicine', 'ENT', 'Ophthalmology',
-      'Medicine', 'Surgery', 'Obstetrics & Gynaecology', 'Pediatrics', 'Orthopedics',
-      'Dermatology', 'Psychiatry', 'Radiology', 'Anesthesia'
-    ];
+        .sidebar.open {
+            left: 0;
+        }
 
-    const subjectProgress = {
-      'Anatomy': 20, 'Physiology': 50, 'Biochemistry': 30, 'Pathology': 60, 'Pharmacology': 45,
-      'Microbiology': 70, 'Forensic Medicine': 10, 'Community Medicine': 35, 'ENT': 55, 'Ophthalmology': 25,
-      'Medicine': 80, 'Surgery': 65, 'Obstetrics & Gynaecology': 75, 'Pediatrics': 40,
-      'Orthopedics': 50, 'Dermatology': 20, 'Psychiatry': 10, 'Radiology': 0, 'Anesthesia': 5
-    };
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
 
-    const qbankData = {};
-    subjectNames.forEach(subject => {
-      qbankData[subject] = {
-        'Sample Topic': [
-          { q: `Sample question 1 from ${subject}`, opts: ["Option 1", "Option 2", "Option 3", "Option 4"], ans: "Option 2" },
-          { q: `Sample question 2 from ${subject}`, opts: ["Option A", "Option B", "Option C", "Option D"], ans: "Option C" }
-        ]
-      };
-    });
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
 
-    const subjectList = document.getElementById('subjectList');
-    Object.keys(qbankData).forEach(subject => {
-      const div = document.createElement('div');
-      div.className = 'subject';
-      div.onclick = () => showTopics(subject);
+        .user-info {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
 
-      const title = document.createElement('div');
-      title.innerText = subject;
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+        }
 
-      const progress = document.createElement('div');
-      progress.className = 'subject-progress';
+        .sidebar-menu {
+            list-style: none;
+        }
 
-      const progressBar = document.createElement('div');
-      progressBar.className = 'progress-bar';
+        .sidebar-menu li {
+            margin-bottom: 15px;
+        }
 
-      const progressFill = document.createElement('div');
-      progressFill.className = 'progress-fill';
-      progressFill.style.width = `${subjectProgress[subject] || 0}%`;
+        .sidebar-menu a, .theme-toggle {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: var(--text-color);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+            border: none;
+            background: none;
+            width: 100%;
+            font-size: 16px;
+        }
 
-      progressBar.appendChild(progressFill);
-      const progressText = document.createElement('span');
-      progressText.innerText = `${subjectProgress[subject] || 0}%`;
+        .sidebar-menu a:hover, .theme-toggle:hover {
+            background-color: var(--secondary-color);
+        }
 
-      progress.appendChild(progressBar);
-      progress.appendChild(progressText);
+        .theme-toggle {
+            justify-content: space-between;
+        }
 
-      div.appendChild(title);
-      div.appendChild(progress);
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 24px;
+            background-color: var(--border-color);
+            border-radius: 12px;
+            transition: background-color 0.3s ease;
+        }
 
-      subjectList.appendChild(div);
-    });
+        .toggle-switch.active {
+            background-color: var(--primary-color);
+        }
 
-    function showTopics(subject) {
-      document.getElementById('selectedSubjectTitle').innerText = subject + ' Topics';
-      const topicList = document.getElementById('topicList');
-      topicList.innerHTML = '';
-      Object.keys(qbankData[subject]).forEach(topic => {
-        const div = document.createElement('div');
-        div.className = 'topic';
-        div.innerText = topic;
-        div.onclick = () => showQuestions(subject, topic);
-        topicList.appendChild(div);
-      });
-      showPage('topicPage');
-    }
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
 
-    function showQuestions(subject, topic) {
-      document.getElementById('selectedTopicTitle').innerText = topic;
-      const container = document.getElementById('questionContainer');
-      container.innerHTML = '';
-      qbankData[subject][topic].forEach((q, index) => {
-        const qDiv = document.createElement('div');
-        qDiv.className = 'question';
-        qDiv.innerHTML = `<strong>Q${index + 1}:</strong> ${q.q}`;
-        q.opts.forEach(opt => {
-          const optDiv = document.createElement('div');
-          optDiv.className = 'option';
-          optDiv.innerText = opt;
-          optDiv.onclick = () => {
-            if (opt === q.ans) {
-              optDiv.classList.add('correct');
-            } else {
-              optDiv.classList.add('wrong');
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(26px);
+        }
+
+        .main-content {
+            margin-top: 70px;
+            padding: 20px;
+            min-height: calc(100vh - 150px);
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .google-login {
+            text-align: center;
+            margin: 50px 0;
+        }
+
+        .google-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 2px 10px var(--shadow-color);
+        }
+
+        .google-btn:hover {
+            opacity: 0.9;
+        }
+
+        .subjects-header {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-align: center;
+            color: var(--primary-color);
+        }
+
+        .subjects-list {
+            display: grid;
+            gap: 15px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .subject-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px var(--shadow-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px var(--shadow-color);
+        }
+
+        .subject-info {
+            flex: 1;
+        }
+
+        .subject-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .progress-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 5px;
+        }
+
+        .progress-bar {
+            width: 120px;
+            height: 8px;
+            background-color: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--success-color);
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--success-color);
+        }
+
+        .questions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+            gap: 10px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        .question-number {
+            aspect-ratio: 1;
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .question-number:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .question-number.answered {
+            background-color: var(--success-color);
+            color: white;
+            border-color: var(--success-color);
+        }
+
+        .start-exam-btn {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 20px auto;
+            display: block;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px var(--shadow-color);
+        }
+
+        .start-exam-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px var(--shadow-color);
+        }
+
+        .question-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 20px var(--shadow-color);
+        }
+
+        .question-text {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .question-image {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            border-radius: 8px;
+            margin: 20px auto;
+            display: block;
+            box-shadow: 0 2px 10px var(--shadow-color);
+        }
+
+        .options-container {
+            margin: 30px 0;
+        }
+
+        .option {
+            background-color: var(--secondary-color);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            border-color: var(--primary-color);
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .option.selected {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .option.correct {
+            background-color: var(--success-color) !important;
+            border-color: var(--success-color) !important;
+            color: white !important;
+        }
+
+        .option.incorrect {
+            background-color: var(--error-color) !important;
+            border-color: var(--error-color) !important;
+            color: white !important;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .nav-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px 0;
+        }
+
+        .video-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 15px var(--shadow-color);
+            transition: transform 0.3s ease;
+        }
+
+        .video-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .video-thumbnail {
+            width: 100%;
+            height: 200px;
+            background-color: var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: var(--text-color);
+        }
+
+        .video-info {
+            padding: 15px;
+        }
+
+        .video-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .video-description {
+            font-size: 14px;
+            color: var(--text-color);
+            opacity: 0.7;
+        }
+
+        .dock {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px var(--shadow-color);
+        }
+
+        .dock-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 12px;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            min-width: 60px;
+        }
+
+        .dock-btn:hover, .dock-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .dock-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        .dock-label {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .back-btn {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .questions-grid {
+                grid-template-columns: repeat(10, 1fr);
+                gap: 8px;
+                padding: 15px;
             }
-            Array.from(optDiv.parentNode.querySelectorAll('.option')).forEach(optEl => {
-              optEl.onclick = null;
-              if (optEl.innerText === q.ans) {
-                optEl.classList.add('correct');
-              }
+
+            .question-number {
+                font-size: 14px;
+            }
+
+            .subjects-list {
+                padding: 0 10px;
+            }
+
+            .question-container {
+                margin: 0 10px;
+                padding: 20px;
+            }
+
+            .video-grid {
+                grid-template-columns: 1fr;
+                padding: 0 10px;
+            }
+        }
+    </style>
+</head>
+<body data-theme="light">
+    <!-- Header -->
+    <div class="header">
+        <div class="profile-icon" onclick="toggleSidebar()">
+            👤
+        </div>
+        <div class="title">NEET PG 25</div>
+        <div style="width: 40px;"></div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar-overlay" onclick="closeSidebar()"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="user-info">
+            <div class="user-avatar">👤</div>
+            <div style="font-weight: 600; margin-bottom: 5px;">John Doe</div>
+            <div style="font-size: 14px; opacity: 0.7;">Expires: Dec 31, 2025</div>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#" onclick="showContactUs()">📞 Contact Us</a></li>
+            <li><a href="#" onclick="showProfile()">👤 Profile Settings</a></li>
+            <li><a href="#" onclick="showHelp()">❓ Help & Support</a></li>
+            <li>
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <span>🌙 Dark Mode</span>
+                    <div class="toggle-switch" id="themeToggle">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </button>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Home Page -->
+        <div id="home" class="page active">
+            <div class="google-login">
+                <h2>Welcome to NEET PG 25</h2>
+                <p style="margin: 20px 0;">Your comprehensive preparation platform</p>
+                <button class="google-btn" onclick="googleLogin()">
+                    🔐 Login with Google
+                </button>
+            </div>
+        </div>
+
+        <!-- QBank Page -->
+        <div id="qbank" class="page">
+            <h1 class="subjects-header">SUBJECTS</h1>
+            <div class="subjects-list">
+                <div class="subject-card" onclick="showSubjectQuestions('Anatomy')">
+                    <div class="subject-info">
+                        <div class="subject-name">Anatomy</div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 75%;"></div>
+                        </div>
+                        <div class="progress-text">75%</div>
+                    </div>
+                </div>
+                <div class="subject-card" onclick="showSubjectQuestions('Physiology')">
+                    <div class="subject-info">
+                        <div class="subject-name">Physiology</div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 60%;"></div>
+                        </div>
+                        <div class="progress-text">60%</div>
+                    </div>
+                </div>
+                <div class="subject-card" onclick="showSubjectQuestions('Biochemistry')">
+                    <div class="subject-info">
+                        <div class="subject-name">Biochemistry</div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 45%;"></div>
+                        </div>
+                        <div class="progress-text">45%</div>
+                    </div>
+                </div>
+                <div class="subject-card" onclick="showSubjectQuestions('Pathology')">
+                    <div class="subject-info">
+                        <div class="subject-name">Pathology</div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 30%;"></div>
+                        </div>
+                        <div class="progress-text">30%</div>
+                    </div>
+                </div>
+                <div class="subject-card" onclick="showSubjectQuestions('Pharmacology')">
+                    <div class="subject-info">
+                        <div class="subject-name">Pharmacology</div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 55%;"></div>
+                        </div>
+                        <div class="progress-text">55%</div>
+                    </div>
+                </div>
+                <div class="subject-card" onclick="showSubjectQuestions('Microbiology')">
+                    <div class="subject-info">
+                        <div class="subject-name">Microbiology</div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 40%;"></div>
+                        </div>
+                        <div class="progress-text">40%</div>
+                    </div>
+                </div>
+                <div class="subject-card" onclick="showSubjectQuestions('Forensic Medicine')">
+                    <div class="subject-info">
+                        <div class="subject-name">Forensic Medicine</div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 25%;"></div>
+                        </div>
+                        <div class="progress-text">25%</div>
+                    </div>
+                </div>
+                <div class="subject-card" onclick="showSubjectQuestions('Community Medicine')">
+                    <div class="subject-info">
+                        <div class="subject-name">Community Medicine</div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 35%;"></div>
+                        </div>
+                        <div class="progress-text">35%</div>
+                    </div>
+                </div>
+                <div class="subject-card" onclick="showSubjectQuestions('Medicine')">
+                    <div class="subject-info">
+                        <div class="subject-name">Medicine</div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 50%;"></div>
+                        </div>
+                        <div class="progress-text">50%</div>
+                    </div>
+                </div>
+                <div class="subject-card" onclick="showSubjectQuestions('Surgery')">
+                    <div class="subject-info">
+                        <div class="subject-name">Surgery</div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 65%;"></div>
+                        </div>
+                        <div class="progress-text">65%</div>
+                    </div>
+                </div>
+                <div class="subject-card" onclick="showSubjectQuestions('Obstetrics & Gynecology')">
+                    <div class="subject-info">
+                        <div class="subject-name">Obstetrics & Gynecology</div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 42%;"></div>
+                        </div>
+                        <div class="progress-text">42%</div>
+                    </div>
+                </div>
+                <div class="subject-card" onclick="showSubjectQuestions('Pediatrics')">
+                    <div class="subject-info">
+                        <div class="subject-name">Pediatrics</div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 38%;"></div>
+                        </div>
+                        <div class="progress-text">38%</div>
+                    </div>
+                </div>
+                <div class="subject-card" onclick="showSubjectQuestions('Dermatology')">
+                    <div class="subject-info">
+                        <div class="subject-name">Dermatology</div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 28%;"></div>
+                        </div>
+                        <div class="progress-text">28%</div>
+                    </div>
+                </div>
+                <div class="subject-card" onclick="showSubjectQuestions('Psychiatry')">
+                    <div class="subject-info">
+                        <div class="subject-name">Psychiatry</div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 33%;"></div>
+                        </div>
+                        <div class="progress-text">33%</div>
+                    </div>
+                </div>
+                <div class="subject-card" onclick="showSubjectQuestions('Ophthalmology')">
+                    <div class="subject-info">
+                        <div class="subject-name">Ophthalmology</div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 47%;"></div>
+                        </div>
+                        <div class="progress-text">47%</div>
+                    </div>
+                </div>
+                <div class="subject-card" onclick="showSubjectQuestions('ENT')">
+                    <div class="subject-info">
+                        <div class="subject-name">ENT</div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 52%;"></div>
+                        </div>
+                        <div class="progress-text">52%</div>
+                    </div>
+                </div>
+                <div class="subject-card" onclick="showSubjectQuestions('Orthopedics')">
+                    <div class="subject-info">
+                        <div class="subject-name">Orthopedics</div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 41%;"></div>
+                        </div>
+                        <div class="progress-text">41%</div>
+                    </div>
+                </div>
+                <div class="subject-card" onclick="showSubjectQuestions('Anesthesiology')">
+                    <div class="subject-info">
+                        <div class="subject-name">Anesthesiology</div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 36%;"></div>
+                        </div>
+                        <div class="progress-text">36%</div>
+                    </div>
+                </div>
+                <div class="subject-card" onclick="showSubjectQuestions('Radiology')">
+                    <div class="subject-info">
+                        <div class="subject-name">Radiology</div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 44%;"></div>
+                        </div>
+                        <div class="progress-text">44%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Subject Questions Page -->
+        <div id="subject-questions" class="page">
+            <button class="back-btn" onclick="showPage('qbank')">← Back to Subjects</button>
+            <h2 id="subject-title" style="text-align: center; margin-bottom: 20px;"></h2>
+            <button class="start-exam-btn" onclick="startExam()">Start Exam</button>
+            <div class="questions-grid" id="questions-grid">
+                <!-- Questions will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Question Detail Page -->
+        <div id="question-detail" class="page">
+            <button class="back-btn" onclick="goBackToQuestions()">← Back to Questions</button>
+            <div class="question-container">
+                <div class="question-text" id="question-text"></div>
+                <img id="question-image" class="question-image" style="display: none;" />
+                <div class="options-container" id="options-container">
+                    <!-- Options will be populated by JavaScript -->
+                </div>
+                <div class="navigation-buttons">
+                    <button class="nav-btn" id="prev-btn" onclick="previousQuestion()">Previous</button>
+                    <button class="nav-btn" id="next-btn" onclick="nextQuestion()">Next</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Videos Page -->
+        <div id="videos" class="page">
+            <h1 class="subjects-header">Educational Videos</h1>
+            <div class="video-grid">
+                <div class="video-card">
+                    <div class="video-thumbnail">📹</div>
+                    <div class="video-info">
+                        <div class="video-title">Anatomy Basics - Human Body Systems</div>
+                        <div class="video-description">Comprehensive overview of human anatomy and body systems</div>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <div class="video-thumbnail">📹</div>
+                    <div class="video-info">
+                        <div class="video-title">Physiology Fundamentals</div>
+                        <div class="video-description">Understanding how the human body functions</div>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <div class="video-thumbnail">📹</div>
+                    <div class="video-info">
+                        <div class="video-title">Pathology Case Studies</div>
+                        <div class="video-description">Real-world pathology cases and diagnosis</div>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <div class="video-thumbnail">📹</div>
+                    <div class="video-info">
+                        <div class="video-title">Pharmacology Made Easy</div>
+                        <div class="video-description">Drug mechanisms and clinical applications</div>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <div class="video-thumbnail">📹</div>
+                    <div class="video-info">
+                        <div class="video-title">Surgery Techniques</div>
+                        <div class="video-description">Surgical procedures and techniques explained</div>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <div class="video-thumbnail">📹</div>
+                    <div class="video-info">
+                        <div class="video-title">Clinical Medicine Review</div>
+                        <div class="video-description">Clinical cases and diagnostic approaches</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tests Page -->
+        <div id="tests" class="page">
+            <h1 class="subjects-header">Practice Tests</h1>
+            <div style="text-align: center; margin: 50px 0;">
+                <button class="start-exam-btn" onclick="startFullTest()">Start Full Length Test</button>
+                <p style="margin: 20px 0; font-size: 16px;">200 Questions • 3 Hours • All Subjects</p>
+            </div>
+            
+            <h2 style="text-align: center; margin: 40px 0 20px; color: var(--primary-color);">Subject-wise Tests</h2>
+            <div class="subjects-list">
+                <div class="subject-card" onclick="startSubjectTest('Anatomy')">
+                    <div class="subject-info">
+                        <div class="subject-name">Anatomy Test</div>
+                        <div style="font-size: 14px; opacity: 0.7;">50 Questions • 1 Hour</div>
+                    </div>
+                </div>
+                <div class="subject-card" onclick="startSubjectTest('Physiology')">
+                    <div class="subject-info">
+                        <div class="subject-name">Physiology Test</div>
+                        <div style="font-size: 14px; opacity: 0.7;">50 Questions • 1 Hour</div>
+                    </div>
+                </div>
+                <div class="subject-card" onclick="startSubjectTest('Pathology')">
+                    <div class="subject-info">
+                        <div class="subject-name">Pathology Test</div>
+                        <div style="font-size: 14px; opacity: 0.7;">50 Questions • 1 Hour</div>
+                    </div>
+                </div>
+                <div class="subject-card" onclick="startSubjectTest('Medicine')">
+                    <div class="subject-info">
+                        <div class="subject-name">Medicine Test</div>
+                        <div style="font-size: 14px; opacity: 0.7;">50 Questions • 1 Hour</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Dock -->
+    <div class="dock">
+        <button class="dock-btn active" onclick="showPage('home')" id="home-btn">
+            <div class="dock-icon">🏠</div>
+            <div class="dock-label">Home</div>
+        </button>
+        <button class="dock-btn" onclick="showPage('qbank')" id="qbank-btn">
+            <div class="dock-icon">📚</div>
+            <div class="dock-label">QBank</div>
+        </button>
+        <button class="dock-btn" onclick="showPage('videos')" id="videos-btn">
+            <div class="dock-icon">📹</div>
+            <div class="dock-label">Videos</div>
+        </button>
+        <button class="dock-btn" onclick="showPage('tests')" id="tests-btn">
+            <div class="dock-icon">📝</div>
+            <div class="dock-label">Tests</div>
+        </button>
+    </div>
+
+    <script>
+        // Global variables
+        let currentSubject = '';
+        let currentQuestionIndex = 0;
+        let questions = [];
+        let userAnswers = {};
+        let isAnswerRevealed = false;
+
+        // Load anatomy questions from JSON
+        const anatomyQuestions = [
+            {
+                "id": 1,
+                "question": "Nucleus pulposus is derived from ____________.",
+                "options": [
+                    {"id": "a", "text": "Notochord"},
+                    {"id": "b", "text": "Neural crest"},
+                    {"id": "c", "text": "Mesoderm"},
+                    {"id": "d", "text": "Ectoderm"}
+                ],
+                "correct_option": "a",
+                "image": null
+            },
+            {
+                "id": 2,
+                "question": "What is the origin of the fibers marked by the arrow in the given image?",
+                "options": [
+                    {"id": "a", "text": "Hippocampus"},
+                    {"id": "b", "text": "Habenular"},
+                    {"id": "c", "text": "Mammillary body"},
+                    {"id": "d", "text": "Amygdala"}
+                ],
+                "correct_option": "a",
+                "image": "https://via.placeholder.com/400x300/4285f4/ffffff?text=Brain+Anatomy"
+            },
+            {
+                "id": 3,
+                "question": "Among the following, what is the function of the marked muscles?",
+                "options": [
+                    {"id": "a", "text": "Depression"},
+                    {"id": "b", "text": "Protrusion"},
+                    {"id": "c", "text": "Elevation"},
+                    {"id": "d", "text": "Retraction"}
+                ],
+                "correct_option": "a",
+                "image": "https://via.placeholder.com/400x300/4285f4/ffffff?text=Muscle+Anatomy"
+            },
+            {
+                "id": 4,
+                "question": "Which of the marked foramen does the mandibular division of the trigeminal nerve pass through?",
+                "options": [
+                    {"id": "a", "text": "A"},
+                    {"id": "b", "text": "B"},
+                    {"id": "c", "text": "C"},
+                    {"id": "d", "text": "D"}
+                ],
+                "correct_option": "a",
+                "image": "https://via.placeholder.com/400x300/4285f4/ffffff?text=Skull+Foramen"
+            },
+            {
+                "id": 5,
+                "question": "The structure marked with the asterisk in the electron micrograph indicates _____________.",
+                "options": [
+                    {"id": "a", "text": "Mitochondria"},
+                    {"id": "b", "text": "Golgi bodies"},
+                    {"id": "c", "text": "Secretory vesicles"},
+                    {"id": "d", "text": "Ribosomes"}
+                ],
+                "correct_option": "c",
+                "image": "https://via.placeholder.com/400x300/4285f4/ffffff?text=Cell+Organelles"
+            },
+            {
+                "id": 6,
+                "question": "In the image given below, identify the muscle responsible for the opening of the mouth.",
+                "options": [
+                    {"id": "a", "text": "A"},
+                    {"id": "b", "text": "B"},
+                    {"id": "c", "text": "C"},
+                    {"id": "d", "text": "D"}
+                ],
+                "correct_option": "b",
+                "image": "https://via.placeholder.com/400x300/4285f4/ffffff?text=Jaw+Muscles"
+            },
+            {
+                "id": 7,
+                "question": "Identify the structure passing through the foramen marked.",
+                "options": [
+                    {"id": "a", "text": "Abducens nerve"},
+                    {"id": "b", "text": "Spinal accessory nerve"},
+                    {"id": "c", "text": "Ophthalmic artery"},
+                    {"id": "d", "text": "Middle meningeal artery"}
+                ],
+                "correct_option": "a",
+                "image": "https://via.placeholder.com/400x300/4285f4/ffffff?text=Cranial+Nerves"
+            },
+            {
+                "id": 8,
+                "question": "The talocalcaneonavicular joint is a ________ type of joint.",
+                "options": [
+                    {"id": "a", "text": "Ball and Socket"},
+                    {"id": "b", "text": "Saddle type"},
+                    {"id": "c", "text": "Plane"},
+                    {"id": "d", "text": "Ellipsoid"}
+                ],
+                "correct_option": "a",
+                "image": null
+            },
+            {
+                "id": 9,
+                "question": "Which of the following is connected to the structure marked as A in the image below?",
+                "options": [
+                    {"id": "a", "text": "Orbital cortex"},
+                    {"id": "b", "text": "Hippocampus"},
+                    {"id": "c", "text": "Striate cortex"},
+                    {"id": "d", "text": "Optic chiasma"}
+                ],
+                "correct_option": "c",
+                "image": "https://via.placeholder.com/400x300/4285f4/ffffff?text=Brain+Connections"
+            },
+            {
+                "id": 10,
+                "question": "The structure passing through the central tendon of the diaphragm is:",
+                "options": [
+                    {"id": "a", "text": "Oesophagus"},
+                    {"id": "b", "text": "Aorta"},
+                    {"id": "c", "text": "Inferior vena cava"},
+                    {"id": "d", "text": "Sympathetic chain"}
+                ],
+                "correct_option": "c",
+                "image": null
+            },
+            {
+                "id": 11,
+                "question": "Shape of Trapezius muscle is ________________",
+                "options": [
+                    {"id": "a", "text": "Triangular"},
+                    {"id": "b", "text": "Quadrilateral"},
+                    {"id": "c", "text": "Pentagonal"},
+                    {"id": "d", "text": "Linear"}
+                ],
+                "correct_option": "a",
+                "image": null
+            },
+            {
+                "id": 12,
+                "question": "All of the following are true about grey rami communicantes except:",
+                "options": [
+                    {"id": "a", "text": "Unmyelinated"},
+                    {"id": "b", "text": "Connected to spinal nerve"},
+                    {"id": "c", "text": "Preganglionic"},
+                    {"id": "d", "text": "Present medial to white rami communicantes"}
+                ],
+                "correct_option": "c",
+                "image": null
+            },
+            {
+                "id": 13,
+                "question": "Which of the following represents a holocrine gland?",
+                "options": [
+                    {"id": "a", "text": "A"},
+                    {"id": "b", "text": "B"},
+                    {"id": "c", "text": "C"},
+                    {"id": "d", "text": "D"}
+                ],
+                "correct_option": "b",
+                "image": "https://via.placeholder.com/400x300/4285f4/ffffff?text=Gland+Types"
+            },
+            {
+                "id": 14,
+                "question": "Which of the following structures marked in the below image gives rise to the heart in an adult?",
+                "options": [
+                    {"id": "a", "text": "A"},
+                    {"id": "b", "text": "C"},
+                    {"id": "c", "text": "B"},
+                    {"id": "d", "text": "D"}
+                ],
+                "correct_option": "b",
+                "image": "https://via.placeholder.com/400x300/4285f4/ffffff?text=Heart+Development"
+            },
+            {
+                "id": 15,
+                "question": "A 18-year-old woman was undergoing cholecystectomy. During the procedure, the resident accidentally advanced the scissors along the superior border of the epiploic foramen causing injury. Which of the following structures is likely to be injured?",
+                "options": [
+                    {"id": "a", "text": "Right lobe of liver"},
+                    {"id": "b", "text": "Quadrate lobe of liver"},
+                    {"id": "c", "text": "Caudate lobe of liver"},
+                    {"id": "d", "text": "Fundus of gall bladder"}
+                ],
+                "correct_option": "c",
+                "image": null
+            },
+            {
+                "id": 16,
+                "question": "Which of the following structures does the cell pointed in arrow inhibit?",
+                "options": [
+                    {"id": "a", "text": "Vestibular nuclei"},
+                    {"id": "b", "text": "Anterior horn of spinal"},
+                    {"id": "c", "text": "Basal ganglia"},
+                    {"id": "d", "text": "Deep nuclei of cerebellum"}
+                ],
+                "correct_option": "d",
+                "image": "https://via.placeholder.com/400x300/4285f4/ffffff?text=Cerebellum+Cells"
+            },
+            {
+                "id": 17,
+                "question": "The image below shows the insertion of transversus abdominis muscle. Identify the conjoint tendon:",
+                "options": [
+                    {"id": "a", "text": "A"},
+                    {"id": "b", "text": "B"},
+                    {"id": "c", "text": "C"},
+                    {"id": "d", "text": "D"}
+                ],
+                "correct_option": "c",
+                "image": "https://via.placeholder.com/400x300/4285f4/ffffff?text=Abdominal+Muscles"
+            },
+            {
+                "id": 18,
+                "question": "What represents the marked area in the given histology of lymph node?",
+                "options": [
+                    {"id": "a", "text": "Marginal zone"},
+                    {"id": "b", "text": "Paracortical zone"},
+                    {"id": "c", "text": "Germinal center"},
+                    {"id": "d", "text": "Mantle zone"}
+                ],
+                "correct_option": "d",
+                "image": "https://via.placeholder.com/400x300/4285f4/ffffff?text=Lymph+Node+Histology"
+            },
+            {
+                "id": 19,
+                "question": "A young patient presented with complaints of difficulty in swallowing, hoarseness of voice, and loss of taste sensation over the posterior third of tongue. On examination, there was deviation of uvula to the right side. Which nerve is most likely affected?",
+                "options": [
+                    {"id": "a", "text": "Right glossopharyngeal nerve"},
+                    {"id": "b", "text": "Left glossopharyngeal nerve"},
+                    {"id": "c", "text": "Right vagus nerve"},
+                    {"id": "d", "text": "Left vagus nerve"}
+                ],
+                "correct_option": "c",
+                "image": null
+            },
+            {
+                "id": 20,
+                "question": "A 45-year-old man presented with weakness of muscles of mastication, loss of sensation over the mandibular region, and deviation of jaw to the left side on opening the mouth. The nerve involved is:",
+                "options": [
+                    {"id": "a", "text": "Right trigeminal nerve"},
+                    {"id": "b", "text": "Left trigeminal nerve"},
+                    {"id": "c", "text": "Right facial nerve"},
+                    {"id": "d", "text": "Left facial nerve"}
+                ],
+                "correct_option": "c",
+                "image": null
+            }
+        ];
+
+        // Initialize theme
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.body.setAttribute('data-theme', savedTheme);
+            const toggle = document.getElementById('themeToggle');
+            if (savedTheme === 'dark') {
+                toggle.classList.add('active');
+            }
+        }
+
+        // Toggle theme
+        function toggleTheme() {
+            const body = document.body;
+            const toggle = document.getElementById('themeToggle');
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            if (newTheme === 'dark') {
+                toggle.classList.add('active');
+            } else {
+                toggle.classList.remove('active');
+            }
+        }
+
+        // Sidebar functions
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+        }
+
+        // Navigation functions
+        function showPage(pageId) {
+            // Hide all pages
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Update dock buttons
+            const dockBtns = document.querySelectorAll('.dock-btn');
+            dockBtns.forEach(btn => btn.classList.remove('active'));
+            document.getElementById(pageId + '-btn').classList.add('active');
+            
+            // Close sidebar if open
+            closeSidebar();
+        }
+
+        function showSubjectQuestions(subject) {
+            currentSubject = subject;
+            document.getElementById('subject-title').textContent = subject + ' Questions';
+            
+            // Load questions based on subject
+            if (subject === 'Anatomy') {
+                questions = anatomyQuestions;
+            } else {
+                // For other subjects, create placeholder questions
+                questions = [];
+                for (let i = 1; i <= 100; i++) {
+                    questions.push({
+                        id: i,
+                        question: `${subject} Question ${i}: This is a sample question for ${subject}.`,
+                        options: [
+                            {id: 'a', text: 'Option A'},
+                            {id: 'b', text: 'Option B'},
+                            {id: 'c', text: 'Option C'},
+                            {id: 'd', text: 'Option D'}
+                        ],
+                        correct_option: 'a',
+                        image: null
+                    });
+                }
+            }
+            
+            // Generate questions grid
+            const grid = document.getElementById('questions-grid');
+            grid.innerHTML = '';
+            
+            for (let i = 1; i <= questions.length; i++) {
+                const questionBtn = document.createElement('div');
+                questionBtn.className = 'question-number';
+                questionBtn.textContent = i;
+                questionBtn.onclick = () => showQuestionDetail(i - 1);
+                
+                // Mark as answered if user has answered
+                if (userAnswers[currentSubject] && userAnswers[currentSubject][i]) {
+                    questionBtn.classList.add('answered');
+                }
+                
+                grid.appendChild(questionBtn);
+            }
+            
+            showPage('subject-questions');
+        }
+
+        function showQuestionDetail(questionIndex) {
+            currentQuestionIndex = questionIndex;
+            isAnswerRevealed = false;
+            const question = questions[questionIndex];
+            
+            // Update question text
+            document.getElementById('question-text').textContent = `Question ${question.id}: ${question.question}`;
+            
+            // Handle image
+            const questionImage = document.getElementById('question-image');
+            if (question.image) {
+                questionImage.src = question.image;
+                questionImage.style.display = 'block';
+            } else {
+                questionImage.style.display = 'none';
+            }
+            
+            // Generate options
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach(option => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.textContent = `${option.id.toUpperCase()}) ${option.text}`;
+                optionDiv.onclick = () => selectOption(option.id, optionDiv);
+                optionsContainer.appendChild(optionDiv);
             });
-          }
-          qDiv.appendChild(optDiv);
+            
+            // Update navigation buttons
+            document.getElementById('prev-btn').disabled = questionIndex === 0;
+            document.getElementById('next-btn').disabled = questionIndex === questions.length - 1;
+            
+            showPage('question-detail');
+        }
+
+        function selectOption(optionId, optionElement) {
+            if (isAnswerRevealed) return;
+            
+            // Remove previous selections
+            const options = document.querySelectorAll('.option');
+            options.forEach(opt => {
+                opt.classList.remove('selected', 'correct', 'incorrect');
+            });
+            
+            // Mark selected option
+            optionElement.classList.add('selected');
+            
+            // Store user answer
+            if (!userAnswers[currentSubject]) {
+                userAnswers[currentSubject] = {};
+            }
+            userAnswers[currentSubject][questions[currentQuestionIndex].id] = optionId;
+            
+            // Reveal correct answer after a short delay
+            setTimeout(() => {
+                revealAnswer(optionId);
+            }, 500);
+        }
+
+        function revealAnswer(selectedOption) {
+            isAnswerRevealed = true;
+            const question = questions[currentQuestionIndex];
+            const options = document.querySelectorAll('.option');
+            
+            options.forEach(opt => {
+                const optionId = opt.textContent.charAt(0).toLowerCase();
+                if (optionId === question.correct_option) {
+                    opt.classList.add('correct');
+                } else if (optionId === selectedOption && selectedOption !== question.correct_option) {
+                    opt.classList.add('incorrect');
+                }
+            });
+            
+            // Update question grid to show answered
+            updateQuestionGrid();
+        }
+
+        function updateQuestionGrid() {
+            const questionNumbers = document.querySelectorAll('.question-number');
+            questionNumbers.forEach((btn, index) => {
+                const questionId = questions[index].id;
+                if (userAnswers[currentSubject] && userAnswers[currentSubject][questionId]) {
+                    btn.classList.add('answered');
+                }
+            });
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                showQuestionDetail(currentQuestionIndex - 1);
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                showQuestionDetail(currentQuestionIndex + 1);
+            }
+        }
+
+        function goBackToQuestions() {
+            showPage('subject-questions');
+        }
+
+        function startExam() {
+            if (questions.length > 0) {
+                showQuestionDetail(0);
+            }
+        }
+
+        function startFullTest() {
+            alert('Full length test feature will be implemented soon!');
+        }
+
+        function startSubjectTest(subject) {
+            alert(`${subject} test feature will be implemented soon!`);
+        }
+
+        function googleLogin() {
+            alert('Google login integration will be implemented soon!');
+        }
+
+        function showContactUs() {
+            alert('Contact Us: support@neetpg25.com');
+            closeSidebar();
+        }
+
+        function showProfile() {
+            alert('Profile settings will be implemented soon!');
+            closeSidebar();
+        }
+
+        function showHelp() {
+            alert('Help & Support section will be implemented soon!');
+            closeSidebar();
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTheme();
         });
-        container.appendChild(qDiv);
-      });
-      showPage('questionPage');
-    }
-  </script>
+    </script>
 </body>
 </html>
+
